@@ -1,0 +1,41 @@
+ Connection con = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+        String url = "jdbc:mysql://localhost:3306/";
+        String driver = "com.mysql.jdbc.Driver";
+        String userName = "root";
+        String pwd = "";
+        String tb = "std_details";
+        String tb2 = "finances";
+        String db = "exams_database";
+        try{
+            Class.forName(driver).newInstance();
+            con = DriverManager.getConnection(url+db,userName,pwd);
+            try{
+                String querry = "SELECT * FROM "+tb+" WHERE reg_no = ?";
+                pst = con.prepareStatement(querry);
+                pst.setString(1,txt_search.getText());
+                rs = pst.executeQuery();
+                if(rs.next()){
+                    search.setVisible(false);
+                    JOptionPane.showMessageDialog(null,"STUDENT REGISTRATION NUMBER IS AVAILABLE.");
+
+                    try{
+                        String querry2 = "SELECT * FROM "+tb2+" WHERE adm_no = ?";
+                        pst = con.prepareStatement(querry2);
+                        pst.setString(1,txt_search.getText());
+                        rs = pst.executeQuery();
+                        if(rs.next()){
+                            JOptionPane.showMessageDialog(null,"OK");
+                        }
+                    }
+                    catch(Exception sx){
+                        JOptionPane.showMessageDialog(null,sx);
+                    }
+                }
+            }catch(SQLException e){
+                JOptionPane.showMessageDialog(null,"STUDENT REGISTRATION NUMBER IS NOT AVAILABLE.");
+            }
+        }catch(ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException t){
+            JOptionPane.showMessageDialog(null,"ERROR IN CONNECTION\nTHE DATA SOURCE IS CURRENTLY OFF");
+        }
